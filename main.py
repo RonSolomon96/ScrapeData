@@ -4,7 +4,6 @@ import sys
 import requests
 from Post import Post
 
-
 # we define patterns to use for each url.
 
 patterns2 = {
@@ -38,14 +37,13 @@ if len(arguments) > len(URL_dictionary) or len(arguments) <= 1:
 
 url = arguments[1]
 
-
 if url not in URL_dictionary.keys():
     raise Exception("This is not a valid URL")
 
 regex = URL_dictionary[url]
 
 
-#we save th pots to a json file
+# we save th pots to a json file
 def save_posts_to_json(posts, filename):
     json_list = []
     for post in posts:
@@ -89,21 +87,28 @@ def scrape_posts(html_content):
         # Create Post instance
         post = Post(title, author, publish_datetime, text)
         posts_list.append(post)
-
-    save_posts_to_json(posts_list, "Post"+URL_dictionary[url]["ID"]+".json")
-
-
-# get the html response
-try:
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        # Scrape posts from the HTML we got
-        scrape_posts(response.text)
-
-except requests.RequestException as e:
-    print(f"An error occurred: {e}")
+    name = "Post" + URL_dictionary[url]["ID"] + ".json"
+    save_posts_to_json(posts_list, name)
+    print("succeded! the file " + name + " has been updated ")
 
 
+inp = "p"
+while inp != "e":
+    # get the html response
+    try:
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            # Scrape posts from the HTML we got
+            scrape_posts(response.text)
+            inp = "e"
 
 
+    except requests.RequestException as e:
+
+        print(f"An error occurred: {e}")
+
+        retry = input("Do you want to try again? (y/n): ")
+
+        if retry.lower() != 'y':
+            inp = "e"  # Exit the loop if the user doesn't want to retry
