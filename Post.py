@@ -70,7 +70,7 @@ class Post:
             text = re.sub(r'<.*?>', '', text).strip()
 
             # Create Post instance
-            post_info = self.to_dict(title, author, publish_datetime, text)
+            post_info = self.to_dict(title, text, publish_datetime, author)
             posts_list.append(post_info)
         name = "Post" + self.URL_dictionary[self.url]["ID"] + ".json"
         self.save_posts_to_json(posts_list, name)
