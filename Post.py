@@ -2,7 +2,7 @@ from datetime import datetime
 import re
 import json
 
-
+# this pot class contains utils functions and data to handle posts data from different websites
 class Post:
     # we define patterns to use for each url.
     patterns2 = {
@@ -36,7 +36,9 @@ class Post:
         if url not in Post.URL_dictionary.keys():
             raise Exception("This is not a valid URL")
 
-    # this function receive data for date and time . parse it and return the format we want
+
+
+
     def scrape_posts(self, html_content):
         posts_list = []
         # Find all matches of the post pattern
@@ -65,7 +67,7 @@ class Post:
             text = text.replace('\r', '')
             text = text.replace('&quot;', '"')
             text = re.sub(r'<a(.*?)>', ':', text).strip()
-            text = re.sub(r'<.*?>', '\n', text).strip()
+            text = re.sub(r'<.*?>', '', text).strip()
 
             # Create Post instance
             post_info = self.to_dict(title, author, publish_datetime, text)
@@ -91,6 +93,7 @@ class Post:
             "author": author
         }
 
+    # this function receive data for date and time . parse it and return the format we want
     @staticmethod
     def convert_date(date):
         date_formats = [

@@ -5,32 +5,40 @@ from Post import Post
 
 def main():
     # receive arguments
+    termination = "0"
     arg = sys.argv
-    if len(arg) <= 1:
+    # if the argument number doesn't match we want to end the program
+    if len(arg) <= 1 or len(arg) > len(Post.URL_dictionary):
         raise Exception("not valid number of arguments")
-
-    p = Post(arg[1])
-
-    inp = "p"
-    while inp != "e":
-        # get the html response
+    url = arg[1]
+    while termination != "1":
         try:
+            # here we also check the url correctness but we will let the user to try again
+
+
+            p = Post(url)
+
+            # get the html response
+
             response = requests.get(p.url)
 
             if response.status_code == 200:
                 # Scrape posts from the HTML we got
                 p.scrape_posts(response.text)
-                inp = "e"
+                termination = "1"
 
-
-        except requests.RequestException as e:
+        #  we catch both excption for status and bad url and lt the user to try again
+        except(requests.RequestException, Exception) as e:
 
             print(f"An error occurred: {e}")
 
             retry = input("Do you want to try again? (y/n): ")
 
             if retry.lower() != 'y':
-                inp = "e"  # Exit the loop if the user doesn't want to retry
+                # Exit the loop if the user doesn't want to retry
+                termination = "1"
+            else:
+                url = input("Insert url:")
 
 
 if __name__ == "__main__":
